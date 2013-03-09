@@ -4,9 +4,9 @@
 #include <fstream>
 #include <set>
 #include <map>
+#include <memory.h>
 #include "public.h"
-using namespace std;
 
-void read_file(string name, bool ** &conn, int &size);
+void read_file(std::string name, bool ** &conn, size_t &size);
 
 #endif

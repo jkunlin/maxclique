@@ -2,7 +2,9 @@
 #define PUBLIC_H
 
 #include <iostream>
-#include <string.h>
+#include <string>
+#include <vector>
+#include <algorithm>
 #include <assert.h>
 
 #endif

@@ -1,9 +1,10 @@
 #include "read_file.h"
+using namespace std;
 
-void read_file(string name, bool ** &conn, int &size) {
+void read_file(string name, bool ** &conn, size_t &size) {
 	ifstream f(name.c_str());
 	char buffer[80];
-	//assert(f.is_open());
+	assert(f.is_open());
 	set<int> v;
 	multimap<int, int> e;
 
@@ -20,7 +21,7 @@ void read_file(string name, bool ** &conn, int &size) {
 	size = v.size();
 
 	conn = new bool *[size];
-	for(int i = 0; i < size; i++) {
+	for(size_t i = 0; i < size; i++) {
 		conn[i] = new bool[size];
 		memset(conn[i], 0, size * sizeof(bool));
 	}
