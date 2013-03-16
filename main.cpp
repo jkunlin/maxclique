@@ -78,9 +78,9 @@ void expand(bool MCR, const bool * const * conn, Vertices &V) {
 			tmpclique.push_back(i);
 			temp.cut_vertex_from(conn, V, i);
 			if(!temp.empty()) {
-				temp.set_degrees(conn);
-				MCR ? temp.MCR_sort(conn) : temp.degree_sort();
-				temp.colo_sort(conn, min_k);
+		//		temp.set_degrees(conn);
+		//		MCR ? temp.MCR_sort(conn) : temp.degree_sort();
+		//		temp.colo_sort(conn, min_k);
 				num++;
 				expand(MCR, conn, temp);
 			}
