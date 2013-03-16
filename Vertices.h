@@ -31,7 +31,9 @@ class Vertices {
 		//init the vertices index of vector
 		void init(size_t size);
 		//copy vector<Vertex> vertices from v, which element connect with vertex_index
-		void cut_vertex_copy( const bool * const *conn, Vertices &v, int vertex_index);
+		void cut_vertex_from( const bool * const *conn, Vertices &v, int vertex_index);
+		//copy vertices' index to V
+		void copy_to(std::vector<int> &V) const ;
 		//set degree for all vertex in vector
 		void set_degrees(const  bool * const * conn);
 		//sort vertex in vector according degree 
@@ -42,8 +44,13 @@ class Vertices {
 		void MCR_sort(const bool * const *conn);
 		//sort vertex in vector according color method, min_k = max(Qmax.szie - Q.szie + 1, 1)
 		void colo_sort(const bool * const * conn, int min_k);
+		bool empty() const { return vertices.empty(); }
+		size_t get_size() const { return vertices.size();}
+		int get_color_num() const { return vertices.back().get_degree() + 1;}
+		size_t pop() { size_t index = vertices.back().get_index(); vertices.pop_back(); return index; }
 #ifndef NDEBUG
 		void print();
+		void print_colors();
 #endif
 };
 

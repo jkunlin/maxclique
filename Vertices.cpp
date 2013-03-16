@@ -8,11 +8,17 @@ void Vertices::init(size_t size) {
 	}
 }
 
-void Vertices::cut_vertex_copy( const bool * const *conn, Vertices &v, int vertex_index ) {
+void Vertices::cut_vertex_from( const bool * const *conn, Vertices &v, int vertex_index ) {
 	vertices.resize(0);
 	for(vvec_type::const_iterator iter = v.vertices.begin(); iter != v.vertices.end(); ++iter) {
 		if(conn[vertex_index][iter->get_index()])
 			vertices.push_back(*iter);
+	}
+}
+
+void Vertices::copy_to(std::vector<int> &V) const {
+	for(vvec_type::const_iterator iter = vertices.begin(); iter != vertices.end(); ++iter) {
+		V.push_back(iter->get_index());
 	}
 }
 
@@ -75,15 +81,49 @@ bool color_conflict(const bool *const * conn, int vindex, const std::vector<int>
 	return false;
 }
 void Vertices::colo_sort(const bool * const * conn, int min_k) {
-	if(min_k < 0)
+	if(min_k <= 0)
 		min_k = 1;
 	typedef std::vector<int> color;
 	typedef std::vector<color> colors;
-	color C;
-	colors Cs;
+	static color C;
+	static colors Cs;
+	size_t colors_num = 0;
+	C.resize(0);
+
+	for(colors::iterator iter = Cs.begin(); iter != Cs.end(); ++iter) {
+		iter->resize(0);
+	}
+
 	vvec_type::iterator insert_ver_iter = vertices.begin();
 	for(vvec_type::iterator ver_iter = vertices.begin(); ver_iter != vertices.end(); ++ver_iter) {
 
+		//find the proper color to insert vertex
+		colors::size_type i = 0;
+		for(; i != colors_num; ++i) {
+			if(!color_conflict(conn, ver_iter->get_index(), Cs[i])) {
+				//proper color found
+				Cs[i].push_back(ver_iter->get_index());
+				break;
+			}
+		}
+
+		//no proper color found, create empty one
+		if(i == colors_num) {
+			C.resize(0);
+			C.push_back(ver_iter->get_index());
+			if(Cs.size() > colors_num)
+				C.swap(Cs[colors_num]);
+			else
+				Cs.push_back(C);
+			++colors_num;
+		}
+		//contain small color vertices in order
+		if(i + 1 < static_cast<unsigned int>(min_k)) {
+			insert_ver_iter->set_index(ver_iter->get_index());
+			insert_ver_iter->set_degree(0);
+			++insert_ver_iter;
+		}
+		/*
 		//find the proper color to insert vertex
 		colors::iterator colors_iter = Cs.begin();
 		for(; colors_iter != Cs.end(); ++colors_iter) {
@@ -100,6 +140,7 @@ void Vertices::colo_sort(const bool * const * conn, int min_k) {
 			C.push_back(ver_iter->get_index());
 			Cs.push_back(C);
 			colors_iter = Cs.end() - 1;
+			++colors_num;
 		}
 		//contain small color vertices in order
 		if(colors_iter - Cs.begin() + 1 < min_k) {
@@ -107,9 +148,10 @@ void Vertices::colo_sort(const bool * const * conn, int min_k) {
 			insert_ver_iter->set_degree(0);
 			++insert_ver_iter;
 		}
+		*/
 	}
 	colors::size_type i = min_k - 1;
-	for(; i != Cs.size(); ++i) {
+	for(; i < Cs.size(); ++i) {
 		for(color::size_type j = 0; j != Cs[i].size(); ++insert_ver_iter, ++j) {
 			insert_ver_iter->set_index(Cs[i][j]);
 			insert_ver_iter->set_degree(i);
@@ -129,5 +171,19 @@ void Vertices::print()
 		std::cout<<iter->get_degree()<<"  ";
 	}
 	std::cout<<std::endl;
+}
+void Vertices::print_colors(){
+	int pre_color = vertices.begin()->get_degree();
+	int count = 1;
+	for(vvec_type::iterator iter = vertices.begin() + 1; iter != vertices.end(); ++iter) {
+		if(pre_color != iter->get_degree()) {
+			count = 1;
+			std::cout<<count<<"  ";
+			pre_color = iter->get_degree();
+			continue;
+		}
+		++count;
+	}
+	std::cout<<count;
 }
 #endif

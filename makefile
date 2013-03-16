@@ -2,7 +2,7 @@ EXECUTABLE := maxclique
 LIBS := 
 
 CC := g++
-CFLAGS := -g -Wall
+CFLAGS := -g -Wall -O3
 CXXFLAGS := $(CFLAGS)
 
 SOURCE := $(wildcard *.c) $(wildcard *.cpp)
@@ -25,7 +25,7 @@ t:
 	$(CC) $(CFLAGS) -o ver_test read_file.o Vertices.o Vertices_test.cc
 
 r:
-	./ver_test test/mytest.clq
+	./maxclique test/mytest.clq
 
 clean:
 	$(RM) *.o
@@ -45,4 +45,4 @@ endif
 -include $(DEPS)
 
 $(EXECUTABLE): $(OBJS)
-	$(CC) -o $(EXECUTABLE) $(OBJS) $(addprefix -l, $(LIBS))
+	$(CC) -O3 -o $(EXECUTABLE) $(OBJS) $(addprefix -l, $(LIBS))
